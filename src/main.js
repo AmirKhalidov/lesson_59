@@ -12,16 +12,27 @@ const closeButton = document.querySelector('.close-button');
 const prevBtn = document.querySelector('.prev');
 const nextBtn = document.querySelector('.next');
 
+const CARD_HEIGHT = 314;
+
 axios.defaults.baseURL = 'https://pixabay.com';
 
 let pageSetter = 1;
 let currentSearchQuery = '';
+let totalPages;
 
-async function fetchUsers(e, isNextPage = false, isPrevPage = false) {
+const loadMoreBtn = document.createElement('button');
+loadMoreBtn.textContent = 'Load More';
+
+async function fetchUsers(
+    e,
+    isNextPage = false,
+    isPrevPage = false,
+    loadMore = false
+) {
     try {
         e.preventDefault();
 
-        listEl.innerHTML = '';
+        if (!loadMore) listEl.innerHTML = '';
 
         if (!isNextPage && !isPrevPage) {
             const searchQuery = inputEl.value;
@@ -47,7 +58,6 @@ async function fetchUsers(e, isNextPage = false, isPrevPage = false) {
         }
 
         searchBtn.disabled = true;
-        listEl.innerHTML = 'LOADING...';
 
         nextBtn.textContent = `To page ${pageSetter + 1}`;
         nextBtn.classList.remove('hidden');
@@ -60,7 +70,7 @@ async function fetchUsers(e, isNextPage = false, isPrevPage = false) {
         }
 
         const {
-            data: { hits },
+            data: { hits, totalHits },
         } = await axios.get('/api/', {
             params: {
                 key: '50136722-5844e52b964210bda2ded8792',
@@ -73,8 +83,10 @@ async function fetchUsers(e, isNextPage = false, isPrevPage = false) {
             },
         });
 
+        totalPages = (totalHits / 15).toFixed(0);
+        console.log(totalPages);
+
         searchBtn.disabled = false;
-        listEl.innerHTML = '';
         console.log(hits);
 
         if (hits.length === 0) {
@@ -129,8 +141,34 @@ async function fetchUsers(e, isNextPage = false, isPrevPage = false) {
 
             statsContainer.append(likesEl, viewsEl, commentsEl, downloadsEl);
             liItem.append(imgEl, statsContainer);
-            listEl.insertAdjacentElement('afterbegin', liItem);
+            if (loadMore) {
+                listEl.insertAdjacentElement('beforeend', liItem);
+            } else {
+                listEl.insertAdjacentElement('beforeend', liItem);
+            }
         });
+
+        if (hits.length === 15) {
+            if (pageSetter >= totalPages) {
+                loadMoreBtn.textContent =
+                    "We're sorry, but you've reached the end of search results.";
+                loadMoreBtn.disabled = true;
+            } else {
+                loadMoreBtn.textContent = 'Load More';
+                loadMoreBtn.disabled = false;
+            }
+            loadMoreBtn.remove();
+            
+            listEl.appendChild(loadMoreBtn);
+            if (loadMore) {
+                window.scrollBy({
+                    top: CARD_HEIGHT * 2,
+                    behavior: 'smooth',
+                });
+            }
+        } else {
+            loadMoreBtn.remove();
+        }
     } catch (err) {
         console.error(err.message);
         iziToast.error({
@@ -165,9 +203,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 nextBtn.addEventListener('click', async (e) => {
-    await fetchUsers(e, true, false);
+    await fetchUsers(e, true, false, false);
 });
 
 prevBtn.addEventListener('click', async (e) => {
-    await fetchUsers(e, false, true);
+    await fetchUsers(e, false, true, false);
+});
+
+loadMoreBtn.addEventListener('click', async (e) => {
+    await fetchUsers(e, true, false, true);
 });
