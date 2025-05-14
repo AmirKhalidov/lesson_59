@@ -60,8 +60,34 @@
     transition: background 0.2s;
 }
 
+#page-btn {
+    padding: 8px 16px;
+    background: olivedrab;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#page-btn2 {
+    padding: 8px 16px;
+    background: olivedrab;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
 #search-btn:hover {
     background: #0056b3;
+}
+
+#page-btn:hover {
+    background: rgba(106, 142, 35, 0.788);
+}
+#page-btn2:hover {
+    background: rgba(106, 142, 35, 0.788);
 }
 
 .modal {
@@ -109,4 +135,8 @@
 
 .close-button:hover {
     color: #007bff;
+}
+
+.hidden {
+    display: none;
 }

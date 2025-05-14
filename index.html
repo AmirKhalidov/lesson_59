@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/src/style.css" />
         <script type="module" src="/src/main.js" defer></script>
-        <title>Vite App</title>
+        <title>Lesson 60</title>
     </head>
     <body>
         <div id="app">
@@ -17,6 +17,8 @@
                     placeholder="Enter picture topic"
                 />
                 <button type="submit" id="search-btn">Search</button>
+                <button type="button" class="hidden prev" id="page-btn"></button>
+                <button type="button" class="hidden next" id="page-btn2"></button>
                 <ul id="list"></ul>
             </form>
         </div>
@@ -24,7 +26,7 @@
         <div class="modal" id="imageModal">
             <div class="modal-content">
                 <span class="close-button">&times;</span>
-                <img id="modalImage" src="" alt="">
+                <img id="modalImage" src="" alt="" />
             </div>
         </div>
     </body>
